@@ -8,7 +8,7 @@ use memory::Memory;
 #[derive(Debug, Default)]
 pub struct Machine {
     memory: Memory,
-    pointer: usize,
+    pointer: isize,
 }
 
 
