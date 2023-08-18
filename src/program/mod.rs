@@ -1,45 +1,29 @@
-#[derive(Debug)]
-enum Instruction {
-    MoveRight, MoveLeft,
-    Increment, Decrement,
-    Loop(Program),
-    Get, Put,
-}
+mod instruction;
 
-
-impl TryFrom<char> for Instruction {
-    type Error = ();
-
-    fn try_from(value: char) -> Result<Self, Self::Error> {
-        match value {
-            '>' => Ok(Self::MoveRight),
-            '<' => Ok(Self::MoveLeft),
-            '+' => Ok(Self::Increment),
-            '-' => Ok(Self::Decrement),
-            ',' => Ok(Self::Get),
-            '.' => Ok(Self::Put),
-            _ => Err(()),
-        }
-    }
-}
-
+pub use instruction::Instruction;
 
 #[derive(Debug, Default)]
 pub struct Program(Vec<Instruction>);
 
+
+impl Program {
+    pub fn get_instructions<'a>(&'a self) -> &'a[Instruction] {
+        &self.0
+    }
+}
 
 impl From<&str> for Program {
     fn from(code: &str) -> Self {
         let mut instructions = Vec::new();
 
         let mut skip = 0;
-        for (i, c) in dbg!(code).chars().enumerate() {
+        for (i, c) in code.chars().enumerate() {
             if skip != 0 {
                 skip -= 1;
                 continue;
             };
 
-            match dbg!(c) {
+            match c {
                 '[' => {
                     // find the end of the loop
                     let loop_end = 'search: loop {
