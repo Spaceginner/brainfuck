@@ -22,13 +22,10 @@ fn main() {
 
         // if CTRL + D was hit (EOF) - exit
         if expression.is_empty() {
-            return;
+            break;
         };
 
-        // "compile" the expression
-        let program = Program::from(expression.as_str());
-
-        // execute
-        machine.run(&program);
+        // "compile" the expression and execute it
+        machine.run(&Program::from(expression.as_str()));
     };
 }
