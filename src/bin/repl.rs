@@ -21,7 +21,7 @@ fn main() {
         let expression = prompt("\n> ");
 
         // if CTRL + D was hit (EOF) - exit
-        if expression == "" {
+        if expression.is_empty() {
             return;
         };
 
