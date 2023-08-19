@@ -22,14 +22,16 @@ impl Memory {
         match index.cmp(&0) {
             Ordering::Equal | 
             Ordering::Greater => {
-                let delta = self.positive.len() as isize - 1 - index;
-                for _ in 0..-delta {
+                let delta = -(self.positive.len() as isize - 1 - index).min(0) as usize;
+                self.positive.reserve(delta);
+                for _ in 0..delta {
                     self.positive.push(0);
                 };
             },
             Ordering::Less => {
-                let delta = self.negative.len() as isize + index;
-                for _ in 0..-delta {
+                let delta = -(self.negative.len() as isize - 1 + index).min(0) as usize;
+                self.negative.reserve(delta);
+                for _ in 0..delta {
                     self.negative.push(0)
                 };
             },
