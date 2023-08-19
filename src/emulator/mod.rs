@@ -1,6 +1,6 @@
 mod memory;
 
-use std::io::{self, Write};
+use std::io::{self, Read, Write};
 
 use crate::program::{Program, Instruction};
 use memory::Memory;
@@ -29,7 +29,11 @@ impl Machine {
                         self.run(subprogram);
                     };
                 },
-                Instruction::Get => todo!("Instruction::Get"),
+                Instruction::Get => {
+                    let mut buffer = vec![0];
+                    io::stdin().read_exact(&mut buffer).expect("failed to read");
+                    self.memory[self.pointer] = buffer[0];
+                },
                 Instruction::Put => {
                     print!("{}", self.memory[self.pointer] as char);
                     io::stdout().flush().expect("failed to flush stdout");
