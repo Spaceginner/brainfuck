@@ -23,16 +23,20 @@ impl Memory {
             Ordering::Equal | 
             Ordering::Greater => {
                 let delta = -(self.positive.len() as isize - 1 - index).min(0) as usize;
-                self.positive.reserve(delta);
-                for _ in 0..delta {
-                    self.positive.push(0);
+                if delta != 0 {
+                    self.positive.reserve(delta);
+                    for _ in 0..delta {
+                        self.positive.push(0);
+                    };
                 };
             },
             Ordering::Less => {
                 let delta = -(self.negative.len() as isize - 1 + index).min(0) as usize;
-                self.negative.reserve(delta);
-                for _ in 0..delta {
-                    self.negative.push(0)
+                if delta != 0 {
+                    self.negative.reserve(delta);
+                    for _ in 0..delta {
+                        self.negative.push(0)
+                    };
                 };
             },
         };
