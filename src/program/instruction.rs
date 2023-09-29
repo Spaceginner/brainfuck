@@ -1,11 +1,8 @@
-use super::Program;
-
-
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum Instruction {
     MoveRight, MoveLeft,
     Increment, Decrement,
-    Loop(Program),
+    LoopEnter, LoopExit,
     Get, Put,
 }
 
@@ -20,6 +17,8 @@ impl TryFrom<char> for Instruction {
             '-' => Ok(Self::Decrement),
             ',' => Ok(Self::Get),
             '.' => Ok(Self::Put),
+            '[' => Ok(Self::LoopEnter),
+            ']' => Ok(Self::LoopExit),
             _ => Err(()),
         }
     }

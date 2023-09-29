@@ -26,6 +26,6 @@ fn main() {
         };
 
         // "compile" the expression and execute it
-        machine.run(&Program::from(expression.as_str()));
+        machine.run(Program::from(expression.as_str()));
     };
 }
