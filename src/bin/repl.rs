@@ -2,14 +2,14 @@ use std::io::{self, Write};
 use brainfuck::{Machine, Program};
 
 
-fn prompt(message: &str) -> String {
+fn prompt(message: &str) -> Result<String, io::Error> {
     print!("{message}");
     io::stdout().flush().unwrap();
 
     let mut buffer = String::new();
-    io::stdin().read_line(&mut buffer).unwrap();
+    io::stdin().read_line(&mut buffer)?;
 
-    buffer
+    Ok(buffer)
 }
 
 
@@ -18,7 +18,7 @@ fn main() {
 
     loop {
         // read the expression
-        let expression = prompt("\n> ");
+        let expression = prompt("\n> ").unwrap_or_default();
 
         // if CTRL + D was hit (EOF) - exit
         if expression.is_empty() {
