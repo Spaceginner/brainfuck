@@ -26,7 +26,7 @@ impl Machine {
     pub fn load(&mut self, program: Program) {
         self.program = Some(program);
     }
-    
+
     pub fn unload(&mut self) {
         self.program = None;
         self.app_pointer = 0;
@@ -67,7 +67,7 @@ impl Machine {
                                     self.stack.push_front(self.app_pointer);
                                 } else {
                                     let mut loop_depth = 1;
-                                    for new_app_ptr in self.app_pointer.. {
+                                    for new_app_ptr in self.app_pointer+1.. {
                                         match program.get(new_app_ptr) {
                                             Some(I::LoopEnter) => loop_depth += 1,
                                             Some(I::LoopExit) => loop_depth -= 1,
@@ -106,7 +106,7 @@ impl Machine {
 
     pub fn run(&mut self, program: Program) -> Option<MachineException> {
         self.load(program);
-        
+
         loop {
             match self.step() {
                 Ok(()) => continue,
