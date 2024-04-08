@@ -72,7 +72,7 @@ impl Machine {
                                             Some(I::LoopEnter) => loop_depth += 1,
                                             Some(I::LoopExit) => loop_depth -= 1,
                                             Some(_) => continue,
-                                            None => return Err(MachineException::NoOpenLoopsToBeClosed),
+                                            None => return Err(MachineException::UnclosedLoopsDetected),
                                         };
 
                                         if loop_depth == 0 {
@@ -84,12 +84,14 @@ impl Machine {
                             }
                             I::LoopExit => {
                                 if self.memory[self.mem_pointer] == 0 {
-                                    self.stack.pop_front();
+                                    if self.stack.pop_front().is_none() {
+                                        return Err(MachineException::NoOpenLoopsToBeClosed);
+                                    };
                                 } else {
                                     match self.stack.front() {
                                         Some(loop_start) => self.app_pointer = *loop_start,
                                         None => return Err(MachineException::NoOpenLoopsToBeClosed)
-                                    }
+                                    };
                                 };
                             }
                         };
