@@ -49,11 +49,28 @@ impl Machine {
                         io::stdout().flush().expect("failed to flush stdout");
                     }
                     I::LoopEnter => {
-                        self.stack.push_front(self.app_pointer);
+                        if self.memory[self.mem_pointer] != 0 {
+                            self.stack.push_front(self.app_pointer);
+                        } else {
+                            let mut loop_depth = 1;
+                            for new_app_ptr in self.app_pointer.. {
+                                match program.get(new_app_ptr) {
+                                    Some(I::LoopEnter) => loop_depth += 1,
+                                    Some(I::LoopExit) => loop_depth -= 1,
+                                    Some(_) => continue,
+                                    None => todo!(),
+                                };
+                                
+                                if loop_depth == 0 {
+                                    self.app_pointer = new_app_ptr;
+                                    break;
+                                }
+                            }
+                        };
                     }
                     I::LoopExit => {
                         if self.memory[self.mem_pointer] != 0 {
-                            if let Some(loop_start) = self.stack.get(0) {
+                            if let Some(loop_start) = self.stack.front() {
                                 self.app_pointer = *loop_start;
                             };
                         } else {
