@@ -26,6 +26,8 @@ fn main() {
         };
 
         // "compile" the expression and execute it
-        machine.run(Program::from(expression.as_str()));
+        if let Some(exc) = machine.run(Program::from(expression.as_str())) {
+            eprintln!("Execution was not successful, an exception has occurred: {exc:?}");
+        };
     };
 }
