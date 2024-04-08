@@ -17,7 +17,7 @@ pub struct Machine {
 
 
 pub enum MachineException {
-    InvalidInstructionPointer, NoProgramLoaded
+    InvalidInstructionPointer, NoProgramLoaded, NoOpenLoopsToBeClosed
 }
 
 
@@ -58,7 +58,7 @@ impl Machine {
                                     Some(I::LoopEnter) => loop_depth += 1,
                                     Some(I::LoopExit) => loop_depth -= 1,
                                     Some(_) => continue,
-                                    None => todo!(),
+                                    None => return Err(MachineException::NoOpenLoopsToBeClosed),
                                 };
                                 
                                 if loop_depth == 0 {
@@ -69,12 +69,13 @@ impl Machine {
                         };
                     }
                     I::LoopExit => {
-                        if self.memory[self.mem_pointer] != 0 {
-                            if let Some(loop_start) = self.stack.front() {
-                                self.app_pointer = *loop_start;
-                            };
-                        } else {
+                        if self.memory[self.mem_pointer] == 0 {
                             self.stack.pop_front();
+                        } else {
+                            match self.stack.front() {
+                                Some(loop_start) => self.app_pointer = *loop_start,
+                                None => return Err(MachineException::NoOpenLoopsToBeClosed)
+                            }
                         };
                     }
                 };
